@@ -3,7 +3,7 @@ import scipy as sp
 from scipy.stats import multivariate_normal as P
 
 
-def E_step(data, w, phi, mu, sigma):
+def E_step(data, phi, mu, sigma):
     """
        Perform E-step on GMM model
        Each datapoint will find its corresponding best cluster center
@@ -49,7 +49,7 @@ def M_step(data, w, phi, mu, sigma):
     for j in range(len(mu)):
         sum_over_wj = np.sum(w[j])
         # μ <- (1/sum over wj) * weighted sum over all the data points
-        mu[j] = np.sum(np.array([xi*w[j,i] for i, xi in enumerate(data)]), axis=0) / sum_over_wj
+        mu[j] = np.sum(np.array([xi * w[j, i] for i, xi in enumerate(data)]), axis=0) / sum_over_wj
         # σ2 <- wheighted sum over all the data points in cluster((datapoint value - μ_new)**2)
         sigma[j] = np.sum(np.array([np.outer((xi - mu[j]).T, xi - mu[j]) * w[j, i] for i, xi in enumerate(data)]), axis=0)/sum_over_wj
 
@@ -67,14 +67,27 @@ def EM(data, initial_model):
 
     # 2. while not converged:
     converged = False
-    while not converged:
+    i = 0
+    while not converged and i<5: #TODO: ADD CONVERGENCE CONDITIONS
+
         # 2.1     E-step: compute expected value of latent variable given current parameters
-        w = E_step(data,w , phi, mu, sigma)
+        w = E_step(data, phi, mu, sigma)
 
         # 4.     M-step: update parameters to maximize expected likelihood
         phi, mu, sigma = M_step(data, w, phi, mu, sigma)
 
+        # Plot:
+        plt.scatter(data[:, 0], data[:, 1], c=1 + w[0] - w[1], alpha=0.1, cmap='RdYlBu')
+        plt.show()
+
+        i += 1
     # 5. return model
     return phi, mu, sigma
 
+mu = np.array([[0,0],[2,2]])
+sigma = np.array([[[1, 0], [0, 1]], [[1, 0],[0, 1] ] ])
+phi = [0.7,0.3]
+initial_model = [phi,mu,sigma]
+
+EM(data,initial_model)
 
