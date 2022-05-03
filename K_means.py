@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import random
 
 def K_means_cluster(k, data):
     # 1. randomly select k data points as
@@ -32,9 +33,18 @@ def K_means_cluster(k, data):
 
         fig = plt.figure()
         ax1 = fig.add_subplot()
-        ax1.scatter([row[0] for row in clusters[0]], [row[1] for row in clusters[0]], c='b', label='first')
-        ax1.scatter([row[0] for row in clusters[1]], [row[1] for row in clusters[1]], c='r', label='second')
-        plt.legend(loc='upper left');
+
+        colors = ['r','b','g','y']
+        for n in range(k):
+            x = [row[0] for row in clusters[n]]
+            y = [row[1] for row in clusters[n]]
+            ax1.scatter( x, y , c=colors[n%4],alpha=np.random.uniform(0.4,1,size=len(x)), label='first')
+
+        ax1.scatter([row[0] for row in np.array(centroids)], [row[1] for row in np.array(centroids)], c='m',marker="x",label='centroids')
+
+
+
+        plt.legend(loc='upper left')
         plt.show()
 
         # 5. recalculate the centroid of each cluster
