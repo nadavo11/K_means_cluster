@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from K_means import K_means_cluster
+from EM import EM, initial_model
+
 
 N = 50
 # first Gussian
@@ -16,7 +18,7 @@ def generate_normal_datapoint(guaussian_dist):
     mean = guaussian_dist[0]
     cov = guaussian_dist[1]
     dp = np.random.multivariate_normal(mean, cov,  check_valid='warn', tol=1e-8)
-    dp = [dp[0],dp[1]]
+    dp = [dp[0], dp[1]]
     return dp
 
 colors = []
@@ -35,4 +37,12 @@ plt.show()
 
 
 
-K_means_cluster(2, data)
+#K_means_cluster(2, data)
+
+mu = np.array([[-2,2],[2,2]])
+sigma = np.array([[[0.1, 0], [0, 0.1]], [[0.1, 0],[0, 0.1]]])
+phi = [0.7, 0.3]
+initial_model = [phi,mu,sigma]
+
+EM(data, initial_model)
+
